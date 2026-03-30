@@ -10,7 +10,7 @@ env:
 jobs: 
   ci-job: 
     runs-on: ubuntu-latest 
-    environment: DOCKER_ENV
+    environment: DOCKER_ENV_K8S
     steps: 
       - name: Checkout code 
         uses: actions/checkout@v3
@@ -20,17 +20,17 @@ jobs:
       - name: Show the SHA values 
         run: |
           echo "TAG = ${{env.TAG }}"
-      # - name: Login to Dockerhub 
-      #   run: |
-      #     echo "${{ secrets.PASSWORD }}" | docker login -u ${{secrets.USERNAME}} --password-stdin
-      # - name: Build and Tag 
-      #   run: |
-      #     docker build -t ${{ secrets.USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{env.TAG }} .
-      # - name: Push to Dockerhub 
-      #   run: |
-      #     docker push ${{ secrets.USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{env.TAG }}
-      # - name: Logout from Dockerhub 
-      #   if: always()
-      #   run: |
-      #     docker logout 
+      - name: Login to Dockerhub 
+        run: |
+          echo "${{ secrets.PASSWORD }}" | docker login -u ${{secrets.USERNAME}} --password-stdin
+      - name: Build and Tag 
+        run: |
+          docker build -t ${{ secrets.USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{env.TAG }} .
+      - name: Push to Dockerhub 
+        run: |
+          docker push ${{ secrets.USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:${{env.TAG }}
+      - name: Logout from Dockerhub 
+        if: always()
+        run: |
+          docker logout 
 # update helm repo with new image
